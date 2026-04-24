@@ -79,7 +79,8 @@ header{
 #option{
   display: flex;
   justify-content: end;
-  margin: 4rem 1rem 0 0;
+  margin: 4rem 2rem 1rem 0;
+  gap: 1rem;
 }
 
 .container{
@@ -132,7 +133,9 @@ header{
   grid-column: 1 / 8;
   text-transform: capitalize;
   margin-left: 2rem;
+  margin-bottom: 1rem;
   font-size: 2rem;
+  text-shadow: 1px 1px 0 rgb(118, 77, 0);
 }
 
 .container > :nth-child(2){

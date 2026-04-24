@@ -119,6 +119,9 @@ function makeIcon(iconCondition, div) {
 
 
 function fetchWeatherData() {
+    if (!city) {
+        return
+    }
     console.log("Fetching meteo for: " + city);
     dayConditions.clear()
     const fullUrl = `${urlBase}${city}?key=${key}&${unitGroup}`
@@ -154,7 +157,7 @@ btnSearch.addEventListener('click', (e) => {
 
 selectConditions.addEventListener('change', (e)=> {
     console.log(e.target.value);
-    targetCondition = e.target.value
+    let targetCondition = e.target.value
     selectConditions.replaceChildren()
     
     console.log(apiData);
