@@ -166,4 +166,6 @@ header{
   border-radius: 50%;
   margin: 1rem;
   justify-self: center;
+  border: solid black 3px;
+
 }
