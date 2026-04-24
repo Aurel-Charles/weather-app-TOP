@@ -1,6 +1,8 @@
 // webpack.common.js
 import path from "node:path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import Dotenv from "dotenv-webpack";
+import CopyPlugin from "copy-webpack-plugin";
 
 export default {
   entry: "./src/index.js",
@@ -13,6 +15,12 @@ export default {
     new HtmlWebpackPlugin({
       template: "./src/template.html",
     }),
+    new Dotenv(),
+    new CopyPlugin({
+        patterns: [
+          { from: "./src/icons/monochrome", to: "icons/monochrome" }
+        ]
+    })
   ],
   module: {
     rules: [

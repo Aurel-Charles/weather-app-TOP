@@ -52,3 +52,105 @@
   #root, #__next {
     isolation: isolate;
   }
+
+
+
+body{
+  font-family: "Datatype", monospace;
+}
+
+header{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin: 3rem;
+  border: solid black 3px;
+  box-shadow: 3px 3px 0px grey;
+}
+
+.search-box{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+#option{
+  display: flex;
+  justify-content: end;
+  margin: 4rem 1rem 0 0;
+}
+
+.container{
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.card{
+  border: solid black, 1px;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: solid black 3px;
+  box-shadow: 3px 3px 0px grey;
+}
+
+.card > p {
+  text-align: center;
+}
+
+.card.today{
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  margin: 0 10rem 0 10rem;
+}
+
+.card.today > :first-child{
+  grid-column: 1 / 3;
+  font-size: 1.3rem;
+}
+.card.today > :nth-child(2){
+  grid-column: 1 / 3;
+  justify-self: center;
+  width: 6rem;
+}
+.card.today > :nth-child(3){
+  grid-column: 1 / 3;
+  justify-self: center;
+  font-size: 1.4rem;
+}
+.card.today > :nth-child(4){
+  font-size: 2rem;
+}
+.temp-min-max{
+  text-align: center;
+}
+
+#city{
+  grid-column: 1 / 8;
+  text-transform: capitalize;
+  margin-left: 2rem;
+  font-size: 2rem;
+}
+
+.container > :nth-child(2){
+  grid-column: 1 / 8;
+}
+
+.fetch-error{
+  color: red;
+}
+
+.shown{
+  display: block
+}
+
+.hidden{
+  display: none;
+}
+
+.icon{
+  width: 30px;
+}
