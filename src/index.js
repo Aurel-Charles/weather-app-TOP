@@ -1,10 +1,7 @@
 import "./style.css"
-import { coffeeConditions, rainConditions } from "./weather-data-type.js";
+import { coffeeConditions } from "./weather-data-type.js";
 
 console.log("Hello Odin!");
-
-
-console.log("hello Odin");
 ///////////-------------------------------------------------
 
 const urlBase = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/'
@@ -21,12 +18,12 @@ const dayConditions = new Set
 ///////////------------ html element-------------------------------------
 const searchInput = document.querySelector('.input-search')
 const btnSearch = document.querySelector('.btn-search')
-// const cityElement = document.querySelector('#city')
 const cardContainer = document.querySelector('.container')
 const errorElement = document.querySelector('.fetch-error')
 const optionsElement = document.querySelector('#option')
 const selectConditions = document.querySelector('#conditions')
 const selectUnit =document.querySelector('#degree')
+const loadingElement  = document.querySelector('.loading')
 
 
 function displayCard(data, unit, filteredDays = null) {
@@ -36,7 +33,6 @@ function displayCard(data, unit, filteredDays = null) {
     selectConditions.replaceChildren()
 
     const daysToDisplay = filteredDays || data.days;
-    console.log(daysToDisplay);
     
     const cityElement = document.createElement('h2')
     cityElement.setAttribute('id', "city")
@@ -149,14 +145,14 @@ function fetchGif(imgElement, search = null) {
 
 
 function fetchWeatherData() {
+    loadingElement.classList.toggle('hidden')
+    
     if (!city) {
+        loadingElement.classList.toggle('hidden')
         return
     }
-    console.log("Fetching meteo for: " + city);
     dayConditions.clear()
     const fullUrl = `${urlBase}${city}?key=${key}&${unitGroup}`
-    console.log(fullUrl);
-    
     fetch(fullUrl)
         .then((response) => {
             if (!response.ok) {
@@ -167,10 +163,12 @@ function fetchWeatherData() {
         .then((response) => {
             apiData = response
             displayCard(apiData, degree)
+            loadingElement.classList.toggle('hidden')
         })
         .catch((error) => {
             console.error("Error fetching the image:", error);
-            errorElement.textContent = "Error on loading"
+            errorElement.textContent = "Error on loading, try again (make sure the city is is spelled correctly)"
+            loadingElement.classList.toggle('hidden')
         })
 }
 
@@ -186,14 +184,10 @@ btnSearch.addEventListener('click', (e) => {
 })
 
 selectConditions.addEventListener('change', (e)=> {
-    console.log(e.target.value);
     let targetCondition = e.target.value
     selectConditions.replaceChildren()
     
-    console.log(apiData);
-    
     let filteredDays = apiData.days.filter((day => day.conditions === targetCondition))
-    console.log(filteredDays);
     cardContainer.replaceChildren()
     displayCard(apiData, degree, filteredDays)
     selectConditions.value = targetCondition
