@@ -1,5 +1,5 @@
 import "./style.css"
-
+import { coffeeConditions, rainConditions } from "./weather-data-type.js";
 
 console.log("Hello Odin!");
 
@@ -8,6 +8,8 @@ console.log("hello Odin");
 ///////////-------------------------------------------------
 
 const urlBase = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/'
+const urlBaseGif = 'https://api.giphy.com/v1/gifs/translate?'
+const keyGif = process.env.GIFY_API_KEY
 const key = process.env.OPENWEATHER_API_KEY
 let apiData = null
 let unitGroup = 'unitGroup=metric'
@@ -35,7 +37,7 @@ function displayCard(data, unit, filteredDays = null) {
 
     const daysToDisplay = filteredDays || data.days;
     console.log(daysToDisplay);
-
+    
     const cityElement = document.createElement('h2')
     cityElement.setAttribute('id', "city")
     cityElement.textContent = `Weather broadcast in: ${data.resolvedAddress}`
@@ -44,13 +46,23 @@ function displayCard(data, unit, filteredDays = null) {
     daysToDisplay.forEach((day) => {
         
         dayConditions.add(day.conditions)
-
+        
         const card = document.createElement('div');
         card.classList.add("card")
         if (isFirst) {
             card.classList.add('today')
         }
-
+    
+        if (isFirst) {
+            const gifElement = document.createElement('img')
+            gifElement.classList.add('gif')
+            if (coffeeConditions.includes(day.icon)) {
+                fetchGif(gifElement, 'coffee')
+            }
+            else {fetchGif(gifElement, 'rain')}
+            card.append(gifElement)
+        }
+        
         const datetime = document.createElement('p')
         let date = new Date (day.datetime)
         if (isFirst) {
@@ -115,6 +127,24 @@ function makeIcon(iconCondition, div) {
 
     div.append(iconElement)
 }
+
+function fetchGif(imgElement, search = null) {
+    let fullUrlGif = `${urlBaseGif}api_key=${keyGif}&s=${search}`
+    fetch(fullUrlGif)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+            return response.json()
+        })
+        .then(response => {
+            imgElement.src = response.data.images.original.url
+            return imgElement
+        })
+        .catch((error) => {
+            console.error("Error fetching the GIF:", error);
+        })
+    }
 
 
 
