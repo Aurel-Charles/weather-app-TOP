@@ -1,6 +1,7 @@
-# Template Webpack — The Odin Project
+# Weather App — The Odin Project
 
-Template de base pour les projets JavaScript avec Webpack 5.
+Application météo en JavaScript vanilla avec Webpack 5.  
+Données fournies par [Visual Crossing Weather API](https://www.visualcrossing.com/).
 
 ---
 
@@ -11,6 +12,14 @@ git clone https://github.com/Aurel-Charles/template-webpack-TOP.git
 cd template-webpack-TOP
 npm install
 ```
+
+Créer un fichier `.env` à la racine du projet :
+
+```bash
+cp .env.example .env
+```
+
+Remplacer `YOUR_API_KEY` par ta clé API Visual Crossing.
 
 ---
 
