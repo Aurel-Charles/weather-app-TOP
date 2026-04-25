@@ -6,6 +6,7 @@ console.log("Hello Odin!");
 
 const urlBase = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/'
 const urlBaseGif = 'https://api.giphy.com/v1/gifs/translate?'
+const urlBaseGeoReverse = "https://nominatim.openstreetmap.org/reverse?"
 const keyGif = process.env.GIFY_API_KEY
 const key = process.env.OPENWEATHER_API_KEY
 let apiData = null
@@ -24,7 +25,7 @@ const optionsElement = document.querySelector('#option')
 const selectConditions = document.querySelector('#conditions')
 const selectUnit =document.querySelector('#degree')
 const loadingElement  = document.querySelector('.loading')
-
+const btnGeoloc = document.querySelector('.btn-geoloc')
 
 function displayCard(data, unit, filteredDays = null) {
     errorElement.textContent = ""
@@ -94,6 +95,20 @@ function displayCard(data, unit, filteredDays = null) {
         const tempmin = document.createElement('p')
         tempmin.textContent = `${day.tempmin}${unit} min`
         tempMinMax.append(tempmin)
+
+        if (isFirst) {
+            const sunRiseSet = document.createElement('div')
+            sunRiseSet.classList.add('sunrise-sunset')
+            card.append(sunRiseSet)
+
+            const sunrise = document.createElement('p')
+            sunrise.textContent = `Sunrise - ${day.sunrise.slice(0,5)}`
+            sunRiseSet.append(sunrise)
+    
+            const sunset = document.createElement('p')
+            sunset.textContent = `Sunset - ${day.sunset.slice(0,5)}`
+            sunRiseSet.append(sunset)  
+        }
 
         cardContainer.append(card);
         isFirst = false
@@ -166,21 +181,59 @@ function fetchWeatherData() {
             loadingElement.classList.toggle('hidden')
         })
         .catch((error) => {
-            console.error("Error fetching the image:", error);
-            errorElement.textContent = "Error on loading, try again (make sure the city is is spelled correctly)"
+            
+            if (error.message.includes('400')) {
+                errorElement.textContent =  "City not found, check the spelling"
+            }
+            else{
+                errorElement.textContent = "Error on loading, try again"
+            }
             loadingElement.classList.toggle('hidden')
         })
+}
+
+function search() {
+    cardContainer.replaceChildren()
+    degree = '°C'
+    unitGroup = 'unitGroup=metric'
+    fetchWeatherData()
 }
 
 searchInput.addEventListener('input', (e)=> {
     city = e.target.value
 })
 
-btnSearch.addEventListener('click', (e) => {
-    cardContainer.replaceChildren()
-    degree = '°C'
-    unitGroup = 'unitGroup=metric'
-    fetchWeatherData()
+btnSearch.addEventListener('click', () => {
+    search()
+})
+searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        search()
+    }
+})
+
+btnGeoloc.addEventListener('click', ()=> {
+    function success(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        fetch(`${urlBaseGeoReverse}lat=${latitude}&lon=${longitude}&format=json`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json()
+            })
+            .then(geolocation => {
+                city = `${geolocation.address.city || geolocation.address.town || geolocation.address.village}, ${geolocation.address.state}, ${geolocation.address.country}`
+                console.log(city);
+                fetchWeatherData()
+                
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+    navigator.geolocation.getCurrentPosition(success)
 })
 
 selectConditions.addEventListener('change', (e)=> {
@@ -189,7 +242,12 @@ selectConditions.addEventListener('change', (e)=> {
     
     let filteredDays = apiData.days.filter((day => day.conditions === targetCondition))
     cardContainer.replaceChildren()
-    displayCard(apiData, degree, filteredDays)
+    if (targetCondition === '---') {
+        displayCard(apiData, degree)
+    }
+    else {
+        displayCard(apiData, degree, filteredDays)
+    }
     selectConditions.value = targetCondition
 })
 

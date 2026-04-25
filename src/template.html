@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Datatype:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=coffee,sync" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=coffee,my_location,sync" />
 </head>
 <body>
     <header>
@@ -27,9 +27,10 @@
     <div class="search-box">
         <div>
             <label for="input-search">Enter a City</label>
+            <input name="input-search" id="input-search" class="input-search" type="text">
+            <button class="btn-search">search</button>
         </div>
-        <input name="input-search" id="input-search" class="input-search" type="text">
-        <button class="btn-search">search</button>
+        <button class="btn-geoloc"><span class="material-symbols-outlined">my_location</span></button>
     </div>
     
     <div id="option" class="hidden">
