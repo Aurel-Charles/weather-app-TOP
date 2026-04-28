@@ -129,7 +129,7 @@ header{
 }
 
 
-.fetch-error{
+.error-message{
   display: flex;
   justify-content: center;
   font-size: 2rem;

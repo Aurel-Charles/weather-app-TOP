@@ -1,14 +1,14 @@
 
 
-export function setupUI(onSearch) {
+export function setupUI({ onSearch, onUnitChange }) {
     const body = document.querySelector('body')
-///
+/// Header
     const header = document.createElement('header')
 
     const title = document.createElement('h1')
     title.textContent = 'Should I go for a coffee walk?'
     header.append(title)
-//
+// Cta and input
     const searchDiv = document.createElement('div')
     searchDiv.classList.add('search-box')
 
@@ -24,11 +24,35 @@ export function setupUI(onSearch) {
     const btnSearch = document.createElement('button')
     btnSearch.classList.add('btn-search')
     btnSearch.textContent = 'SEARCH'
+    // action
     btnSearch.addEventListener('click', ()=> {
         onSearch(inputElement.value)
     })
+    // unit selector
+    const unitDiv = document.createElement('div')
+    unitDiv.classList.add('unit')
 
-    searchDiv.append(labelSearch, inputElement, btnSearch)
+    const unitSelector = document.createElement('select')
+    unitSelector.setAttribute('name', 'unit')
+    unitSelector.setAttribute('id', 'unit')
+
+    const optionCelcius = document.createElement('option')
+    optionCelcius.value = 'metric'
+    optionCelcius.textContent = '°C'
+    const optionFarenheit = document.createElement('option')
+    optionFarenheit.value = 'us'
+    optionFarenheit.textContent = '°F'
+
+    unitSelector.append(optionCelcius, optionFarenheit)
+    unitDiv.append(unitSelector)
+    
+    unitSelector.addEventListener('change', (e)=> {
+        let newUnit = e.target.value
+        onUnitChange(newUnit)
+    } )
+
+
+    searchDiv.append(labelSearch, inputElement, btnSearch , unitDiv)
 //
     const cardContainer = document.createElement('div')
     cardContainer.classList.add('container')
@@ -36,7 +60,8 @@ export function setupUI(onSearch) {
     body.append(header, searchDiv, cardContainer)
 }
 
-export function createCard(day, isToday , gifUrl = null) {
+export async function createCard(day, isToday, unit, gifUrl = null) {
+    const degreeValue = unit === 'metric' ? '°C' : '°F'
 
     const card = document.createElement('div');
     card.classList.add("card")
@@ -50,10 +75,11 @@ export function createCard(day, isToday , gifUrl = null) {
     datetime.classList.add('date')
 
     
-    const srcIconBase = 'icons/monochrome/'
+    const srcIconBase = './icons/monochrome/'
     const iconElement =document.createElement('img')
     iconElement.classList.add('icon')
-    iconElement.src = `${srcIconBase}${day.icon}.svg`
+    iconElement.src = ( await import(`${srcIconBase}${day.icon}.svg`)).default
+    
     const imgAlt = day.icon.replace("-", " ")
     iconElement.alt = `${imgAlt} icon`
     
@@ -62,7 +88,7 @@ export function createCard(day, isToday , gifUrl = null) {
     conditions.classList.add('conditions')
     
     const temp = document.createElement('p')
-    temp.textContent = `${day.temp}°C`
+    temp.textContent = `${day.temp}${degreeValue}`
     temp.classList.add('temp')
     
     card.append(datetime,iconElement,conditions, temp)
@@ -76,12 +102,12 @@ export function createCard(day, isToday , gifUrl = null) {
         tempMinMax.classList.add('temp-min-max')
     
         const tempmax = document.createElement('p')
-        tempmax.textContent = `${day.tempmax}°C max`
+        tempmax.textContent = `${day.tempmax}${degreeValue} max`
         tempmax.classList.add('tempmax')
         tempMinMax.append(tempmax)
     
         const tempmin = document.createElement('p')
-        tempmin.textContent = `${day.tempmin}°C min`
+        tempmin.textContent = `${day.tempmin}${degreeValue} min`
         tempmin.classList.add('tempmin')
         tempMinMax.append(tempmin)
         
@@ -106,21 +132,39 @@ export function createCard(day, isToday , gifUrl = null) {
 
 }
 
-export function renderToday(day, gifUrl) {
+export async function renderToday(day, gifUrl, unit) {    
     const container = document.querySelector('.container')
     container.replaceChildren()
-    const card = createCard(day, true, gifUrl)
+    const card = await createCard(day, true,unit, gifUrl)
     container.append(card)
 }
 
 
-export function renderWeek(days) {
+export async function renderWeek(days, unit) {
     const container = document.querySelector('.container')
     const nextWeek = days.slice(1)
-    const nextWeekElement =[]
-    nextWeek.forEach(day => {
-        const card = createCard(day, false)
-        nextWeekElement.push(card)
-    });
-    container.append(...nextWeekElement)
+    const promiseCards =  nextWeek.map(day => (createCard(day, false,unit)))
+    const cards = await Promise.all(promiseCards)
+    container.append(...cards)
+}
+
+
+export function renderError(err) {
+    console.error(err)
+    let message
+    if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+        message = 'Network error — check your connection'
+    } else if (err.message.includes('Weather') && err.message.includes('400')) {
+        message = 'City not found — check spelling'
+    } else {
+        message = 'Something went wrong'
+    }
+  
+    const container = document.querySelector('.container')
+    container.replaceChildren()
+
+    const errorElement = document.createElement('div')
+    errorElement.classList.add('error-message')
+    errorElement.textContent = message
+    container.append(errorElement)
 }

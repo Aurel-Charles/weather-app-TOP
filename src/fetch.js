@@ -4,11 +4,11 @@ const keyWeather = process.env.OPENWEATHER_API_KEY
 const urlBaseGif = 'https://api.giphy.com/v1/gifs/translate?'
 const keyGif = process.env.GIFY_API_KEY
 
-export async function fetchWeather(address, metric = 'unitGroup=metric') {
+export async function fetchWeather(address, metric) {
     const fullUrl  = `${urlBaseWeather}${address}?key=${keyWeather}&${metric}`
     const response = await fetch(fullUrl)
     if (!response.ok) {
-        throw new Error(`Weathter HTTP error! status: ${response.status}`)
+        throw new Error(`Weather HTTP error! status: ${response.status}`)
     }
     let dataWeather = await response.json()
     let dataApp = {
