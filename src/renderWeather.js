@@ -1,13 +1,17 @@
 
 
-export function setupUI({ onSearch, onUnitChange }) {
+export function setupUI({ onSearch, onUnitChange , onGeoloc}) {
     const body = document.querySelector('body')
 /// Header
     const header = document.createElement('header')
 
     const title = document.createElement('h1')
     title.textContent = 'Should I go for a coffee walk?'
-    header.append(title)
+
+    const coffeeIcon = document.createElement('span')
+    coffeeIcon.textContent = 'coffee'
+    coffeeIcon.classList.add('material-symbols-outlined')
+    header.append(coffeeIcon, title )
 // Cta and input
     const searchDiv = document.createElement('div')
     searchDiv.classList.add('search-box')
@@ -51,8 +55,19 @@ export function setupUI({ onSearch, onUnitChange }) {
         onUnitChange(newUnit)
     } )
 
+    const btnGeoloc = document.createElement('button')
+    btnGeoloc.classList.add('btn-geoloc')
 
-    searchDiv.append(labelSearch, inputElement, btnSearch , unitDiv)
+    const spanIconGeoloc = document.createElement('span')
+    spanIconGeoloc.classList.add('material-symbols-outlined')
+    spanIconGeoloc.textContent = 'my_location'
+    btnGeoloc.append(spanIconGeoloc)
+    btnGeoloc.addEventListener('click', ()=> {
+        onGeoloc()
+    })
+
+
+    searchDiv.append(labelSearch, inputElement, btnSearch, btnGeoloc , unitDiv)
 //
     const cardContainer = document.createElement('div')
     cardContainer.classList.add('container')
@@ -132,9 +147,18 @@ export async function createCard(day, isToday, unit, gifUrl = null) {
 
 }
 
-export async function renderToday(day, gifUrl, unit) {    
+export async function renderTitleWeather(address) {
+    console.log(address);
     const container = document.querySelector('.container')
     container.replaceChildren()
+    const title = document.createElement('h1')
+    title.textContent = address
+    title.classList.add('weather-address')
+    container.append(title)
+}
+
+export async function renderToday(day, gifUrl, unit) {    
+    const container = document.querySelector('.container')
     const card = await createCard(day, true,unit, gifUrl)
     container.append(card)
 }
