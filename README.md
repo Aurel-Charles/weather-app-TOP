@@ -1,4 +1,5 @@
 # Weather App — The Odin Project
+[View it live](https://aurel-charles.github.io/weather-app-TOP/)
 
 Application météo en JavaScript vanilla avec Webpack 5.  
 Données fournies par [Visual Crossing Weather API](https://www.visualcrossing.com/).
