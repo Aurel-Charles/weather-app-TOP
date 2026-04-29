@@ -79,6 +79,13 @@ export async function createCard(day, isToday, unit,walk, gifUrl = null, address
     const card = document.createElement('div');
     card.classList.add("card")
     card.classList.add(isToday ? 'today' : 'week-day')
+
+    if (isToday && address) {
+        const title = document.createElement('h1')
+        title.textContent = address
+        title.classList.add('weather-address')
+        card.append(title)
+    }
     
     const datetime = document.createElement('div')
     datetime.classList.add('date')
@@ -115,9 +122,7 @@ export async function createCard(day, isToday, unit,walk, gifUrl = null, address
     temp.textContent = `${day.temp}${degreeValue}`
     temp.classList.add('temp')
 
-    if (address) {
-        card.prepend(address)
-    }
+
     if (isToday) {
         card.append(datetime,iconElement, temp, conditions)
     }else{
@@ -180,18 +185,11 @@ export async function createCard(day, isToday, unit,walk, gifUrl = null, address
 
 }
 
-export function createAddressTitle(address) {
-    const title = document.createElement('h1')
-    title.textContent = address
-    title.classList.add('weather-address')
-    return title
-}
 
 export async function renderToday(day, gifUrl, unit, walk, address) {    
-    const addressElement =  createAddressTitle(address)
     const container = document.querySelector('.container')
     container.replaceChildren()
-    const card = await createCard(day, true,unit, walk, gifUrl, addressElement)
+    const card = await createCard(day, true,unit, walk, gifUrl, address)
     container.append(card)
 }
 

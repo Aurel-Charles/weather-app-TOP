@@ -1,5 +1,5 @@
 import { fetchGif, fetchWeather } from "./fetch.js";
-import { renderError, createAddressTitle, renderToday, renderWeek, setupUI } from "./renderWeather.js";
+import { renderError, renderToday, renderWeek, setupUI } from "./renderWeather.js";
 import "./style.css"
 import { coffeeConditions } from "./weather-data-type.js";
 
