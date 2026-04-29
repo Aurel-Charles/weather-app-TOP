@@ -39,7 +39,7 @@ function unitChange(unit) {
     }
 }
 
-function geoloc() {
+function geoLocate() {
     async function success(position) {
         try {
             const latitude = position.coords.latitude
@@ -49,31 +49,20 @@ function geoloc() {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`)
             }
-            const geolocation = await response.json()
+            const addressData = await response.json()
 
-            currentCity = `${geolocation.address.city || geolocation.address.town || geolocation.address.village}, ${geolocation.address.state}, ${geolocation.address.country}`
-            const data = await fetchWeather(currentCity, `unitGroup=${currentUnit}`)
-            const today = data.days[0]
-            const keyword = coffeeConditions.includes(today.icon) ? 'coffee' : 'rain'
-            
-            const gifPromise = fetchGif(keyword)
-            console.log(data)
-            const gifUrl = await gifPromise
-            console.log(gifUrl)
-
-            await renderTitleWeather(data.address)
-            await renderToday(today, gifUrl, currentUnit)
-            await renderWeek(data.days, currentUnit)
+            const addressFromCoord = `${addressData.address.city || addressData.address.town || addressData.address.village}, ${addressData.address.state}, ${addressData.address.country}`
+            search(addressFromCoord)
 
         } catch (err) {
-            console.error(err)
+            renderError(err)
         }
     }
-    navigator.geolocation.getCurrentPosition(success)
+    navigator.geolocation.getCurrentPosition(success, (error) => renderError(error))
 }
 
 setupUI({
-    onSearch: search,           // clé "onSearch", valeur = fonction search
+    onSearch: search,         
     onUnitChange: unitChange,  
-    onGeoloc: geoloc  // clé "onUnitChange", valeur = fonction unitchange
+    onGeoLocate: geoLocate 
 })

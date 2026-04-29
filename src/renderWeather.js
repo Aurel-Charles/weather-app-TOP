@@ -1,6 +1,6 @@
 
 
-export function setupUI({ onSearch, onUnitChange , onGeoloc}) {
+export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
     const body = document.querySelector('body')
 /// Header
     const header = document.createElement('header')
@@ -55,19 +55,19 @@ export function setupUI({ onSearch, onUnitChange , onGeoloc}) {
         onUnitChange(newUnit)
     } )
 
-    const btnGeoloc = document.createElement('button')
-    btnGeoloc.classList.add('btn-geoloc')
+    const btnGeoLocate = document.createElement('button')
+    btnGeoLocate.classList.add('btn-geoloc')
 
     const spanIconGeoloc = document.createElement('span')
     spanIconGeoloc.classList.add('material-symbols-outlined')
     spanIconGeoloc.textContent = 'my_location'
-    btnGeoloc.append(spanIconGeoloc)
-    btnGeoloc.addEventListener('click', ()=> {
-        onGeoloc()
+    btnGeoLocate.append(spanIconGeoloc)
+    btnGeoLocate.addEventListener('click', ()=> {
+        onGeoLocate()
     })
 
 
-    searchDiv.append(labelSearch, inputElement, btnSearch, btnGeoloc , unitDiv)
+    searchDiv.append(labelSearch, inputElement, btnSearch, btnGeoLocate , unitDiv)
 //
     const cardContainer = document.createElement('div')
     cardContainer.classList.add('container')
@@ -147,7 +147,7 @@ export async function createCard(day, isToday, unit, gifUrl = null) {
 
 }
 
-export async function renderTitleWeather(address) {
+export function renderTitleWeather(address) {
     console.log(address);
     const container = document.querySelector('.container')
     container.replaceChildren()
@@ -180,6 +180,8 @@ export function renderError(err) {
         message = 'Network error — check your connection'
     } else if (err.message.includes('Weather') && err.message.includes('400')) {
         message = 'City not found — check spelling'
+    } else if (err.message.includes('Geolocation')) {
+        message = 'Location access denied — enable it or type a city'
     } else {
         message = 'Something went wrong'
     }
