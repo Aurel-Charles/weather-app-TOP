@@ -1,207 +1,358 @@
 /* 1. Use a more-intuitive box-sizing model */
 *, *::before, *::after {
     box-sizing: border-box;
-  }
-  
-  /* 2. Remove default margin */
-  *:not(dialog) {
-    margin: 0;
-  }
-  
-  /* 3. Enable keyword animations */
-  @media (prefers-reduced-motion: no-preference) {
-    html {
-      interpolate-size: allow-keywords;
-    }
-  }
-  
-  body {
-    /* 4. Increase line-height */
-    line-height: 1.5;
-    /* 5. Improve text rendering */
-    -webkit-font-smoothing: antialiased;
-  }
-  
-  /* 6. Improve media defaults */
-  img, picture, video, canvas, svg {
-    display: block;
-    max-width: 100%;
-  }
-  
-  /* 7. Inherit fonts for form controls */
-  input, button, textarea, select {
-    font: inherit;
-  }
-  
-  /* 8. Avoid text overflows */
-  p, h1, h2, h3, h4, h5, h6 {
-    overflow-wrap: break-word;
-  }
-  
-  /* 9. Improve line wrapping */
-  p {
-    text-wrap: pretty;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    text-wrap: balance;
-  }
-  
-  /*
-    10. Create a root stacking context
-  */
-  #root, #__next {
-    isolation: isolate;
-  }
-
-
-
-body{
-  font-family: "Datatype", monospace;
-  background-color: rgb(25, 25, 25);
-  color: beige;
 }
 
+/* 2. Remove default margin */
+*:not(dialog) {
+  margin: 0;
+}
+
+/* 3. Enable keyword animations */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  /* 4. Increase line-height */
+  line-height: 1.5;
+  /* 5. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 6. Improve media defaults */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 7. Inherit fonts for form controls */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 8. Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* 9. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+/*
+  10. Create a root stacking context
+*/
+#root, #__next {
+  isolation: isolate;
+}
+
+:root {
+
+
+  /* ── BACKGROUNDS ──────────────────────────────────────────── */
+  --bg-page:          #f7f0e6;   /* Fond principal — crème chaud */
+  --bg-panel:         #ede2ce;   /* Fond des cartes / panneaux */
+  --bg-panel-hover:   #e3d3b8;   /* Fond carte au survol */
+  --bg-surface-dark:  #2c1f0e;   /* Fond sombre — nav, cartes actives */
+
+  /* ── TEXT ─────────────────────────────────────────────────── */
+  --text-primary:     #2c1f0e;   /* Texte principal sur fond clair */
+  --text-secondary:   #7a4f2b;   /* Texte secondaire, labels, sous-titres */
+  --text-muted:       #2c1f0e6a; /* Texte discret (~42% opacité) */
+  --text-accent:      #c8913c;   /* Texte accentué — températures, verdicts */
+
+  --text-on-dark:          #f7f0e6;   /* Texte principal sur fond sombre */
+  --text-on-dark-secondary: #c8913c99;/* Texte secondaire sur fond sombre */
+  --text-on-dark-muted:     #f7f0e640; /* Texte discret sur fond sombre */
+  --text-on-dark-accent:    #c8913c;   /* Accentué sur fond sombre */
+
+  /* ── BORDERS ──────────────────────────────────────────────── */
+  --border-light:     #ede2cebb; /* Séparateur léger entre zones */
+  --border-panel:     #e3d3b8;   /* Bordure de carte / panneau */
+  --border-on-dark:   #c8913c20; /* Séparateur sur fond sombre */
+
+  /* ── ACCENTS ──────────────────────────────────────────────── */
+  --accent-gold:      #c8913c;   /* Couleur d'accentuation principale */
+  --accent-gold-soft: #c8913c40; /* Variante douce — fond badge, highlight */
+  --accent-brown:     #7a4f2b;   /* Accentuation secondaire — brun chaud */
+
+  /* ── INTERACTIVE ──────────────────────────────────────────── */
+  --btn-bg:           #2c1f0e;   /* Fond bouton primaire */
+  --btn-text:         #f7f0e6;   /* Texte bouton primaire */
+  --btn-bg-secondary: #ede2ce;   /* Fond bouton secondaire */
+  --btn-text-secondary: #7a4f2b; /* Texte bouton secondaire */
+
+}
+
+
+/* grid */
+body{
+  font-family: "Bebas Neue", monospace;
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  height: 100vh;
+}
+
+
+
+.container {
+  grid-column: 1 / 3;
+  display: grid;                               
+  grid-template-rows: repeat(7, 1fr);
+  grid-template-columns: 1.2fr 2fr;
+}
+
+
+.card.today{
+  grid-row: 1 / 8;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+
+/* -------  */
 header{
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 2rem;
-  margin: 3rem;
-  border: solid rgb(203, 203, 203) 3px;
-  box-shadow: 0 0 30px rgb(137, 137, 137);
+  align-items:center;
+  gap: 1rem;
+  color: var(--color-on-ink);
+  padding: 0.8rem;
+}
 
+header > h1{
+  color: var(--text-on-dark-accent);
+}
+header > span{
+  color: var(--text-on-dark-accent);
+}
+
+header, .search-box{
+  background-color: var(--bg-surface-dark);
 }
 
 .search-box{
   display: flex;
-  flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
-  margin-bottom: 3rem;
+  gap: 1rem;
+}
+
+.search-box > * {
+  height: 2rem;
+  border-radius: 15px;
+  background-color: var(--btn-bg-secondary);
+  color: var(--color-brown);
+}
+
+input, button, select{
+  text-align: center;
+  border-style: none;
+}
+#input-search{
+  padding: 0 0.4rem 0 0.4rem;
 }
 
 .btn-geoloc{
+  width: 2rem;
   display: flex;
   justify-content: center;
+  align-items: center;
+  border-radius: 100%;
 }
 
-
-.container{
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(7 , 1fr);
+.btn-search{
+  padding: 0.4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.card{
-  padding: 1rem;
+.unit{
   display: flex;
   align-items: center;
-  background-color: beige;
-  color: rgb(0, 0, 0);
+  margin-left: 2rem;
+}
+#unit{
+  margin: 0.4rem;
+  background-color: var(--btn-bg-secondary);
 }
 
-.card > * {
-  text-align: center;
+.container{
+  background-color: var(--bg-page);
+  padding: 2rem;
 }
-
-
 
 .card.today{
-  grid-column: 1 / 8;
-  margin: 0 10rem 0 10rem;
-  padding: 0.5rem;
+  padding: 2rem;
+  border-right: solid 1px var(--border-panel);
+}
+
+.weather-address{
+  grid-column: 1 / 3;
+  color: var(--text-muted);
+  font-size: 2rem;
+  align-self: self-end;
+}
+.card.today .date{
+  grid-column: 1 / 3;
+  margin-bottom: 1rem;
+}
+.card.today .date p{
+  color: var(--text-secondary);
+  font-size: 1.4rem;
+}
+.card.today .icon{
+  color: var(--text-secondary);
+  width: 180px;
+  place-self: center;
+}
+.card.today .temp{
+  color: var(--text-primary);
+  font-size: 4rem;
+  align-self: end;
+}
+.card.today .conditions{
+  grid-column: 1 / 3;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  justify-self: center;
+}
+.card.today .walk{
+  grid-column: 1 / 3;
+  color: var(--text-on-dark-accent);
+  background-color: var(--bg-surface-dark);
+  align-self: end;
+  justify-self: center;
+  text-align: center;
+  padding: 0.3rem;
+  width: 10rem;
+  border-radius: 15px 15px 0 0;
+  margin-top: 2rem;
+  border-top: solid 2px;
+  border-left: solid 2px;
+  border-right: solid 2px;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.500);
+}
+.card.today .gif{
+  grid-column: 1 / 3;
+  color: var(--text-primary);
+  justify-self: center;
+  border-radius: 0 0 15px 15px;
+  margin-bottom: 1rem;
+  border-bottom: solid 2px;
+  border-left: solid 2px;
+  border-right: solid 2px;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.500);
+}
+
+.sunrise-sunset , .temp-min-max{
   display: grid;
+  gap: 0.2rem 1rem;
   grid-template-columns: repeat(2 , 1fr);
 }
 
-.card.today > .date{ 
-  font-size: 2rem;
- }
- 
-.card.today > .conditions,.card.today >  .temp{ 
-  font-size: 1.7rem;
- }
+.sunrise , .tempmax{
+  justify-self: end;
+  align-self: end;
+}
+.sunrise-value, .tempmax-value{
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+  justify-self: end;
+  align-self: start;
+}
+.sunset, .tempmin{
+  justify-self: start;
+  align-self: end;
+}
 
+.sunrise,.sunset,.tempmin, .tempmax{
+  color: var(--text-muted);
+}
+
+.sunrise-value,.sunset-value,.tempmin-value, .tempmax-value{
+  color: var(--text-secondary);
+}
 
 .card.week-day{
- display: flex;
- flex-direction: column;
- justify-content:stretch;
-}
-.card.week-day > img{ 
-  min-height: 70px;
-}
-.card.week-day > .temp{ 
-  margin-top: auto;
-}
-
-
-.weather-address{
-  text-align: center;
-  text-transform: capitalize;
-  margin-left: 2rem;
-  margin-bottom: 1rem;
-  font-size: 2rem;
-  text-shadow: 1px 1px 0 rgb(118, 77, 0);
-  grid-column: 1 / 8;
-}
-
-.container{
-  margin: 0 3rem 0 3rem ;
-}
-
-.error-message{
   display: flex;
-  justify-content: center;
-  font-size: 2rem;
-  color: red;
+  align-items: center;
+  gap: 2rem;
+  background-color: var(--bg-panel);
+  margin: 0.4rem 2rem 0.4rem 2rem;
+  padding: 0.2rem 1rem;
+  border-radius: 15px;
+}
+.card.week-day > .date{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 1rem;
+}
+div.date > .day{
+  color: var(--text-secondary);
+}
+div.date > .num-and-month{
+  color: var(--text-muted);
 }
 
-.shown{
-  display: block
+.card.card.week-day > .temp {
+  margin-left: auto;
+  font-size: 1.4rem;
+  color: var(--text-secondary);
 }
-
-.hidden{
-  display: none;
-}
-
 
 .icon{
   width: 30px;
-  justify-self: center;
-  color: red;
-}
-.card.today > .icon{
-  width: 80px;
-  justify-self: center;
-  color: red;
 }
 
 .gif{
   width: 10rem;
-  border-radius: 10%;
-  margin: 1rem;
-  justify-self: center;
-  border: solid black 3px;
-  grid-column: 2 / 3;
-  grid-row: 1 / 3;
 }
 
-.card.today > .temp{
-  grid-column: 1 / 2;
-  grid-row: 4 / 5;
-}
 
-.loading .material-symbols-outlined {
-  margin-top: 3rem;
-  animation: spin 1s linear infinite;
-  display: flex;
-  justify-content: center;
-  font-size: 10rem;
-}
+@media (max-width: 768px) {
+  body{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 7rem 4rem auto;
+  }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  .search-box{
+    justify-content: center;
+  }
+  .container{
+    grid-column: 1 / 2;
+    display: grid;                               
+    grid-template-columns: 1fr;
+    padding: 0.3rem;
+  }
+  .card.week-day{
+    flex: auto;
+    margin: 0.4rem;
+    padding: 0.2rem 1rem;
+  }
+  .card.week-day > .date{
+    align-items: start;
+    min-width: 2.5rem;
+  }
+
+  .card.today{
+    padding: 2rem;
+    border-bottom: solid 1px var(--border-panel);
+    border-right: none;
+    margin-bottom: 1rem;
+  }
+  
+
 }

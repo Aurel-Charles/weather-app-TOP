@@ -1,5 +1,5 @@
 import { fetchGif, fetchWeather } from "./fetch.js";
-import { renderError, renderTitleWeather, renderToday, renderWeek, setupUI } from "./renderWeather.js";
+import { renderError, createAddressTitle, renderToday, renderWeek, setupUI } from "./renderWeather.js";
 import "./style.css"
 import { coffeeConditions } from "./weather-data-type.js";
 
@@ -24,8 +24,7 @@ async function search(city) {
       const gifUrl = await gifPromise
       console.log(gifUrl)
 
-      await renderTitleWeather(data.address)
-      await renderToday(today, gifUrl, currentUnit)
+      await renderToday(today, gifUrl, currentUnit, keyword, data.address)
       await renderWeek(data.days, currentUnit)
     } catch (err) {
       renderError(err)

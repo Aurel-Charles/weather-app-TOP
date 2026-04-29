@@ -16,10 +16,8 @@ export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
     const searchDiv = document.createElement('div')
     searchDiv.classList.add('search-box')
 
-    const labelSearch = document.createElement('label')
-    labelSearch.setAttribute('for', 'input-search')
-    labelSearch.textContent = 'Enter a city'
     const inputElement = document.createElement('input')
+    inputElement.setAttribute('placeholder','Enter a city')
     inputElement.setAttribute('name', 'input-search')
     inputElement.setAttribute('id', 'input-search')
     inputElement.setAttribute('type', 'text')
@@ -67,7 +65,7 @@ export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
     })
 
 
-    searchDiv.append(labelSearch, inputElement, btnSearch, btnGeoLocate , unitDiv)
+    searchDiv.append(inputElement, btnSearch, btnGeoLocate , unitDiv)
 //
     const cardContainer = document.createElement('div')
     cardContainer.classList.add('container')
@@ -75,19 +73,30 @@ export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
     body.append(header, searchDiv, cardContainer)
 }
 
-export async function createCard(day, isToday, unit, gifUrl = null) {
+export async function createCard(day, isToday, unit,walk, gifUrl = null, address = null) {
     const degreeValue = unit === 'metric' ? '°C' : '°F'
 
     const card = document.createElement('div');
     card.classList.add("card")
     card.classList.add(isToday ? 'today' : 'week-day')
     
-    const datetime = document.createElement('p')
-    let date = new Date (day.datetime)
-    date = dateFns.format(date, isToday? 'EEEE dd MMMM yyyy' : 'EEE dd MMM')
-
-    datetime.textContent = date
+    const datetime = document.createElement('div')
     datetime.classList.add('date')
+
+    const dateObj = new Date(day.datetime)
+    if (isToday) {
+        const dayEl = document.createElement('p')
+        dayEl.textContent = dateFns.format(dateObj, 'EEEE dd MMMM yyyy')
+        datetime.append(dayEl)
+    } else {
+        const dayEl = document.createElement('p')
+        dayEl.textContent = dateFns.format(dateObj, 'eee')
+        dayEl.classList.add('day')
+        const numAndMonth = document.createElement('p')
+        numAndMonth.textContent = dateFns.format(dateObj, 'dd MMM')
+        numAndMonth.classList.add('num-and-month')
+        datetime.append(dayEl, numAndMonth)
+    }
 
     
     const srcIconBase = './icons/monochrome/'
@@ -105,41 +114,65 @@ export async function createCard(day, isToday, unit, gifUrl = null) {
     const temp = document.createElement('p')
     temp.textContent = `${day.temp}${degreeValue}`
     temp.classList.add('temp')
-    
-    card.append(datetime,iconElement,conditions, temp)
+
+    if (address) {
+        card.prepend(address)
+    }
+    if (isToday) {
+        card.append(datetime,iconElement, temp, conditions)
+    }else{
+        card.append(datetime,iconElement, conditions, temp)
+    }
     
     if (isToday) {
         const gifElement = document.createElement('img')
         gifElement.classList.add('gif')
         gifElement.src = gifUrl
 
+        const walkSentence = document.createElement('p')
+        walkSentence.textContent = (walk === 'coffee')? 'Yes - go for a walk' : 'No - stay at home(but drink coffee!)'
+        walkSentence.classList.add('walk')
+
         const tempMinMax = document.createElement('div')
         tempMinMax.classList.add('temp-min-max')
     
         const tempmax = document.createElement('p')
-        tempmax.textContent = `${day.tempmax}${degreeValue} max`
+        tempmax.textContent = 'High'
         tempmax.classList.add('tempmax')
-        tempMinMax.append(tempmax)
-    
+        const tempmaxValue = document.createElement('p')
+        tempmaxValue.textContent = `${day.tempmax}${degreeValue}`
+        tempmaxValue.classList.add('tempmax-value')
+
         const tempmin = document.createElement('p')
-        tempmin.textContent = `${day.tempmin}${degreeValue} min`
+        tempmin.textContent = 'Low'
         tempmin.classList.add('tempmin')
-        tempMinMax.append(tempmin)
+        const tempminValue = document.createElement('p')
+        tempminValue.textContent = `${day.tempmin}${degreeValue}`
+        tempminValue.classList.add('tempmin-value')
+
+        tempMinMax.append(tempmax, tempmaxValue,tempmin, tempminValue)
         
+
         const sunRiseSet = document.createElement('div')
         sunRiseSet.classList.add('sunrise-sunset')
     
         const sunrise = document.createElement('p')
-        sunrise.textContent = `Sunrise - ${day.sunrise.slice(0,5)}`
+        sunrise.textContent = 'Sunrise'
         sunrise.classList.add('sunrise')
-        sunRiseSet.append(sunrise)
+        const sunriseValue = document.createElement('p')
+        sunriseValue.textContent = `${day.sunrise.slice(0,5)}`
+        sunriseValue.classList.add('sunrise-value')
     
         const sunset = document.createElement('p')
-        sunset.textContent = `Sunset - ${day.sunset.slice(0,5)}`
+        sunset.textContent = 'Sunset'
         sunset.classList.add('sunset')
-        sunRiseSet.append(sunset) 
+        const sunsetValue = document.createElement('p')
+        sunsetValue.textContent = `${day.sunset.slice(0,5)}`
+        sunsetValue.classList.add('sunset-value')
+
+        sunRiseSet.append(sunrise, sunriseValue, sunset, sunsetValue) 
         
-        card.append(sunRiseSet, tempMinMax, gifElement)
+        card.append(walkSentence,gifElement, sunRiseSet, tempMinMax)
     }
 
     
@@ -147,19 +180,18 @@ export async function createCard(day, isToday, unit, gifUrl = null) {
 
 }
 
-export function renderTitleWeather(address) {
-    console.log(address);
-    const container = document.querySelector('.container')
-    container.replaceChildren()
+export function createAddressTitle(address) {
     const title = document.createElement('h1')
     title.textContent = address
     title.classList.add('weather-address')
-    container.append(title)
+    return title
 }
 
-export async function renderToday(day, gifUrl, unit) {    
+export async function renderToday(day, gifUrl, unit, walk, address) {    
+    const addressElement =  createAddressTitle(address)
     const container = document.querySelector('.container')
-    const card = await createCard(day, true,unit, gifUrl)
+    container.replaceChildren()
+    const card = await createCard(day, true,unit, walk, gifUrl, addressElement)
     container.append(card)
 }
 
