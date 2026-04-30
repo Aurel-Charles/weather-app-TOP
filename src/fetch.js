@@ -4,6 +4,8 @@ const keyWeather = process.env.OPENWEATHER_API_KEY
 const urlBaseGif = 'https://api.giphy.com/v1/gifs/translate?'
 const keyGif = process.env.GIFY_API_KEY
 
+const urlBaseGeoReverse = "https://nominatim.openstreetmap.org/reverse?"
+
 export async function fetchWeather(address, metric) {
     const fullUrl  = `${urlBaseWeather}${address}?key=${keyWeather}&${metric}`
     const response = await fetch(fullUrl)
@@ -39,3 +41,18 @@ export async function fetchGif(search) {
     const gifUrl = dataGif.data.images.original.url
     return gifUrl
 }
+
+
+export async function fetchAddressFromCoords(lat, lon) {
+    const response = await fetch(`${urlBaseGeoReverse}lat=${lat}&lon=${lon}&format=json`)
+    if (!response.ok) {
+        throw new Error(`Nominatim HTTP error! status: ${response.status}`)
+    }
+    const addressData = await response.json()
+
+    const addressFromCoord = `${addressData.address.city || addressData.address.town || addressData.address.village}, ${addressData.address.state}, ${addressData.address.country}`
+
+    
+    return addressFromCoord
+    }
+

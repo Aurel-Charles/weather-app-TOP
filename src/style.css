@@ -224,6 +224,7 @@ input, button, select{
   color: var(--text-secondary);
   font-size: 1.2rem;
   justify-self: center;
+  text-shadow: 1px 1px var(--text-accent);
 }
 .card.today .walk{
   grid-column: 1 / 3;
@@ -320,6 +321,12 @@ div.date > .num-and-month{
   width: 10rem;
 }
 
+.error-message{
+place-self: center;
+font-size: 1.5rem;
+text-shadow: 1px 1px red;
+text-align: center;
+}
 
 @media (max-width: 768px) {
   body{
@@ -354,5 +361,7 @@ div.date > .num-and-month{
     margin-bottom: 1rem;
   }
   
-
+  .card.today .temp{
+    padding-left: 1rem;
+  }
 }

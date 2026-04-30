@@ -1,4 +1,4 @@
-import { fetchGif, fetchWeather } from "./fetch.js";
+import { fetchAddressFromCoords, fetchGif, fetchWeather } from "./fetch.js";
 import { renderError, renderToday, renderWeek, setupUI } from "./renderWeather.js";
 import "./style.css"
 import { coffeeConditions } from "./weather-data-type.js";
@@ -43,15 +43,8 @@ function geoLocate() {
         try {
             const latitude = position.coords.latitude
             const longitude = position.coords.longitude
-            const urlBaseGeoReverse = "https://nominatim.openstreetmap.org/reverse?"
-            const response = await fetch(`${urlBaseGeoReverse}lat=${latitude}&lon=${longitude}&format=json`)
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`)
-            }
-            const addressData = await response.json()
-
-            const addressFromCoord = `${addressData.address.city || addressData.address.town || addressData.address.village}, ${addressData.address.state}, ${addressData.address.country}`
-            search(addressFromCoord)
+            const address = await fetchAddressFromCoords(latitude, longitude)
+            search(address)
 
         } catch (err) {
             renderError(err)
@@ -59,6 +52,8 @@ function geoLocate() {
     }
     navigator.geolocation.getCurrentPosition(success, (error) => renderError(error))
 }
+
+
 
 setupUI({
     onSearch: search,         
