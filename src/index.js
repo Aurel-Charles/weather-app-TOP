@@ -1,5 +1,5 @@
 import { fetchAddressFromCoords, fetchGif, fetchWeather } from "./fetch.js";
-import { renderError, renderToday, renderWeek, setupUI } from "./renderWeather.js";
+import { renderError, renderToday, renderWeek, setupUI, toggleLoading } from "./renderWeather.js";
 import "./style.css"
 import { coffeeConditions } from "./weather-data-type.js";
 
@@ -13,7 +13,10 @@ let currentUnit = 'metric'
 
 async function search(city) {
     try {
-      const data = await fetchWeather(city, `unitGroup=${currentUnit}`)
+      toggleLoading(true)
+
+
+      const data =  await fetchWeather(city, `unitGroup=${currentUnit}`)
       currentCity = city
       const today = data.days[0]
 
@@ -23,11 +26,16 @@ async function search(city) {
       console.log(data)
       const gifUrl = await gifPromise
       console.log(gifUrl)
-
       await renderToday(today, gifUrl, currentUnit, keyword, data.address)
       await renderWeek(data.days, currentUnit)
+
+      const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
+      await wait(1000)
+
     } catch (err) {
       renderError(err)
+    } finally{
+        toggleLoading(false)
     }
   }
 

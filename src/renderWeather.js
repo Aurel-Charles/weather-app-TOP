@@ -1,8 +1,14 @@
 
+function makeIcon(iconName) {
+    const icon = document.createElement('span')
+    icon.textContent = iconName
+    icon.classList.add('material-symbols-outlined')
+    return icon
+}
 
 export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
     const body = document.querySelector('body')
-/// Header
+/// Header(title)
     const header = document.createElement('header')
 
     const title = document.createElement('h1')
@@ -12,7 +18,8 @@ export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
     coffeeIcon.textContent = 'coffee'
     coffeeIcon.classList.add('material-symbols-outlined')
     header.append(coffeeIcon, title )
-// Cta and input
+// Search Box
+    //input
     const searchDiv = document.createElement('div')
     searchDiv.classList.add('search-box')
 
@@ -26,7 +33,7 @@ export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
     const btnSearch = document.createElement('button')
     btnSearch.classList.add('btn-search')
     btnSearch.textContent = 'SEARCH'
-    // action
+    // action search
     btnSearch.addEventListener('click', ()=> {
         onSearch(inputElement.value)
     })
@@ -48,14 +55,17 @@ export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
     unitSelector.append(optionCelcius, optionFarenheit)
     unitDiv.append(unitSelector)
     
+    //action unit
     unitSelector.addEventListener('change', (e)=> {
         let newUnit = e.target.value
         onUnitChange(newUnit)
     } )
 
+    //geolocate
     const btnGeoLocate = document.createElement('button')
     btnGeoLocate.classList.add('btn-geoloc')
 
+    //action geolocate
     const spanIconGeoloc = document.createElement('span')
     spanIconGeoloc.classList.add('material-symbols-outlined')
     spanIconGeoloc.textContent = 'my_location'
@@ -70,7 +80,36 @@ export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
     const cardContainer = document.createElement('div')
     cardContainer.classList.add('container')
 
-    body.append(header, searchDiv, cardContainer)
+
+    const iconQuestion = document.createElement('div')
+    iconQuestion.classList.add('icon-question')
+    iconQuestion.classList.add('icon-question')
+    const coffeeIcon2 = makeIcon('coffee')
+    const walkIcon = makeIcon('directions_walk')
+    const addIcon = makeIcon('add_2')
+    const question_mark = makeIcon('question_mark')
+    const parenthesesL = document.createElement('p')
+    parenthesesL.textContent = ('(')
+    const parenthesesR = document.createElement('p')
+    parenthesesR.textContent = (')')
+
+    iconQuestion.append(parenthesesL,coffeeIcon2,addIcon, walkIcon, parenthesesR, question_mark)   
+    
+    cardContainer.append(iconQuestion)
+    
+
+    const loadingOverlay = document.createElement('div')
+    loadingOverlay.classList.add('loading-overlay','hidden')
+    loadingOverlay.setAttribute('id', 'loading-overlay')
+    const loadingIcon = makeIcon('cycle')
+    loadingIcon.classList.add('loading-icon')
+    loadingOverlay.append(loadingIcon)
+
+    const wrapper  = document.createElement('div')
+    wrapper.classList.add('wrapper')
+    wrapper.append(cardContainer, loadingOverlay)
+    
+    body.append(header, searchDiv,wrapper)
 }
 
 export async function createCard(day, isToday, unit,walk, gifUrl = null, address = null) {
@@ -223,4 +262,14 @@ export function renderError(err) {
     errorElement.classList.add('error-message')
     errorElement.textContent = message
     container.append(errorElement)
+}
+
+
+export function toggleLoading(isLoading) {
+    const loadingElement = document.querySelector('#loading-overlay')
+    if (!loadingElement) {
+        console.warn('loading-overlay not found in DOM')
+        return
+    }
+    loadingElement.classList.toggle('hidden', !isLoading)
 }
