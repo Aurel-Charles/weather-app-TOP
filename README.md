@@ -1,51 +1,55 @@
 # Weather App — The Odin Project
+
 [View it live](https://aurel-charles.github.io/weather-app-TOP/)
 
-Application météo en JavaScript vanilla avec Webpack 5.  
-Données fournies par [Visual Crossing Weather API](https://www.visualcrossing.com/).
+Vanilla JavaScript weather app built with Webpack 5. Search any city or use geolocation to get the current weather and a 7-day forecast, with a mood-matching GIF.
+
+---
+
+## APIs
+
+| Service | Used for |
+|---|---|
+| [Visual Crossing](https://www.visualcrossing.com/) | Current weather + 7-day forecast |
+| [Giphy](https://developers.giphy.com/) | Mood GIF based on weather conditions |
+| [OpenStreetMap Nominatim](https://nominatim.org/) | Reverse geocoding for the geolocation button |
 
 ---
 
 ## Installation
 
 ```bash
-git clone https://github.com/Aurel-Charles/template-webpack-TOP.git
-cd template-webpack-TOP
+git clone https://github.com/Aurel-Charles/weather-app-TOP.git
+cd weather-app-TOP
 npm install
 ```
 
-Créer un fichier `.env` à la racine du projet :
+Create a `.env` file at the project root:
 
 ```bash
 cp .env.example .env
 ```
 
-Remplacer `YOUR_API_KEY` par ta clé API Visual Crossing.
+Fill in two keys:
+
+- `OPENWEATHER_API_KEY` — your **Visual Crossing** API key (variable name kept for legacy reasons)
+- `GIFY_API_KEY` — your **Giphy** API key
+
+Nominatim does not require a key.
 
 ---
 
-## Commandes
+## Commands
 
-| Commande | Description |
+| Command | Description |
 |---|---|
-| `npm run dev` | Lance le serveur de développement avec hot reload |
-| `npm run build` | Génère le build de production dans `/dist` |
-| `npm run deploy` | Déploie sur GitHub Pages (branche `gh-pages`) |
+| `npm run dev` | Start the dev server with hot reload |
+| `npm run build` | Build production assets to `/dist` |
+| `npm run deploy` | Deploy to GitHub Pages (`gh-pages` branch) |
 
 ---
 
-## Workflow Git
+## Notes
 
-Commandes à répéter à chaque sauvegarde de progression :
-
-```bash
-git add .
-git commit -m "message de commit"
-git push
-```
-
-En une ligne :
-
-```bash
-git add . && git commit -m "message" && git push
-```
+- Weather icons are loaded via dynamic `import()` and code-split per chunk by Webpack.
+- API keys are inlined into the bundle at build time. They are public on the deployed site — restrict them on each provider's dashboard if needed.
