@@ -1,9 +1,8 @@
 import { fetchAddressFromCoords, fetchGif, fetchWeather } from "./fetch.js";
 import { renderError, renderToday, renderWeek, setupUI, toggleLoading } from "./renderWeather.js";
 import "./style.css"
-import { coffeeConditions } from "./weather-data-type.js";
-
-
+import { pickSearchTerm } from "./weather-data-type.js";
+import fallbackGif from './assets/no_gif.gif'
 
 
 console.log("Hello Odin!");
@@ -20,17 +19,24 @@ async function search(city) {
       currentCity = city
       const today = data.days[0]
 
-      const keyword = coffeeConditions.includes(today.icon) ? 'coffee' : 'rain'
+      const {keyword, category} = pickSearchTerm(today.icon)
       
-      const gifPromise = fetchGif(keyword)
-      console.log(data)
-      const gifUrl = await gifPromise
-      console.log(gifUrl)
-      await renderToday(today, gifUrl, currentUnit, keyword, data.address)
-      await renderWeek(data.days, currentUnit)
+      let gifUrl = fallbackGif  
+      try { // doesnt block the rest
+          gifUrl = await fetchGif(keyword)
+      } catch (err) {
+          console.warn(err) 
+      }
 
-      const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
-      await wait(1000)
+        const preloadedImg = new Image()
+        preloadedImg.src = gifUrl
+        try {
+            await preloadedImg.decode()
+        } catch {
+            'if no preload ... keep going'
+        }
+      await renderToday(today, gifUrl, currentUnit, category, data.address)
+      await renderWeek(data.days, currentUnit)
 
     } catch (err) {
       renderError(err)

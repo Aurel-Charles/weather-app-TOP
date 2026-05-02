@@ -83,7 +83,6 @@ export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
 
     const iconQuestion = document.createElement('div')
     iconQuestion.classList.add('icon-question')
-    iconQuestion.classList.add('icon-question')
     const coffeeIcon2 = makeIcon('coffee')
     const walkIcon = makeIcon('directions_walk')
     const addIcon = makeIcon('add_2')
@@ -112,7 +111,7 @@ export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
     body.append(header, searchDiv,wrapper)
 }
 
-export async function createCard(day, isToday, unit,walk, gifUrl = null, address = null) {
+export async function createCard(day, isToday, unit,category, gifUrl = null, address = null) {
     const degreeValue = unit === 'metric' ? '°C' : '°F'
 
     const card = document.createElement('div');
@@ -174,7 +173,8 @@ export async function createCard(day, isToday, unit,walk, gifUrl = null, address
         gifElement.src = gifUrl
 
         const walkSentence = document.createElement('p')
-        walkSentence.textContent = (walk === 'coffee')? 'Yes - go for a walk' : 'No - stay at home(but drink coffee!)'
+        
+        walkSentence.textContent = (category === 'coffee')? 'Yes - go for a walk' : 'No - stay at home(but drink coffee!)'
         walkSentence.classList.add('walk')
 
         const tempMinMax = document.createElement('div')

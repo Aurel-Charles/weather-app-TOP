@@ -1,7 +1,7 @@
 const urlBaseWeather = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/'
 const keyWeather = process.env.OPENWEATHER_API_KEY
 
-const urlBaseGif = 'https://api.giphy.com/v1/gifs/translate?'
+const urlBaseGif = 'https://api.giphy.com/v1/gifs/search?'
 const keyGif = process.env.GIFY_API_KEY
 
 const urlBaseGeoReverse = "https://nominatim.openstreetmap.org/reverse?"
@@ -32,13 +32,18 @@ export async function fetchWeather(address, metric) {
 }
 
 export async function fetchGif(search) {
-    const fullUrlGif = `${urlBaseGif}api_key=${keyGif}&s=${search}`
+    const fullUrlGif = `${urlBaseGif}api_key=${keyGif}&q=${encodeURIComponent(search)}&limit=25`
     const response = await fetch(fullUrlGif)
     if (!response.ok) {
         throw new Error(`GIPHY HTTP error! status: ${response.status}`)
     }
     const dataGif = await response.json()
-    const gifUrl = dataGif.data.images.original.url
+    if (dataGif.data.length === 0 ) {
+        throw new Error(`No GIF found for "${search}"`)
+    }
+    const randomGif = dataGif.data[Math.floor(Math.random() * dataGif.data.length)]
+    
+    const gifUrl = randomGif.images.original.url
     return gifUrl
 }
 
