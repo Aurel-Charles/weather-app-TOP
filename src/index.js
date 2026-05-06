@@ -5,6 +5,7 @@ import { pickSearchTerm } from "./weather-data-type.js";
 import fallbackGif from './assets/no_gif.gif'
 
 
+
 console.log("Hello Odin!");
 ///////////-------------------------------------------------
 let currentCity = null
@@ -33,7 +34,7 @@ async function search(city) {
         try {
             await preloadedImg.decode()
         } catch {
-            'if no preload ... keep going'
+            // if no preload ... keep going
         }
       await renderToday(today, gifUrl, currentUnit, category, data.address)
       await renderWeek(data.days, currentUnit)

@@ -1,3 +1,4 @@
+import { buildConditions, buildTitle,buildTodayDate, buildGif, buildIcon, buildSunRiseSet, buildTemp, buildTempMinMax, buildWalkSentence, buildWeekDate } from "./renderWeatherElement.js"
 
 function makeIcon(iconName) {
     const icon = document.createElement('span')
@@ -74,12 +75,10 @@ export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
         onGeoLocate()
     })
 
-
     searchDiv.append(inputElement, btnSearch, btnGeoLocate , unitDiv)
 //
     const cardContainer = document.createElement('div')
     cardContainer.classList.add('container')
-
 
     const iconQuestion = document.createElement('div')
     iconQuestion.classList.add('icon-question')
@@ -111,124 +110,50 @@ export function setupUI({ onSearch, onUnitChange , onGeoLocate}) {
     body.append(header, searchDiv,wrapper)
 }
 
-export async function createCard(day, isToday, unit,category, gifUrl = null, address = null) {
-    const degreeValue = unit === 'metric' ? '°C' : '°F'
+export async function createTodayCard(day, unit, gifUrl, category, address) {
+    const card = document.createElement('div')
+    card.classList.add('card', 'today')
 
-    const card = document.createElement('div');
-    card.classList.add("card")
-    card.classList.add(isToday ? 'today' : 'week-day')
+    const iconUrl = (await import(`./icons/monochrome/${day.icon}.svg`)).default
 
-    if (isToday && address) {
-        const title = document.createElement('h1')
-        title.textContent = address
-        title.classList.add('weather-address')
-        card.append(title)
-    }
-    
-    const datetime = document.createElement('div')
-    datetime.classList.add('date')
+    if (address) card.append(buildTitle(address))
 
-    const dateObj = new Date(day.datetime)
-    if (isToday) {
-        const dayEl = document.createElement('p')
-        dayEl.textContent = dateFns.format(dateObj, 'EEEE dd MMMM yyyy')
-        datetime.append(dayEl)
-    } else {
-        const dayEl = document.createElement('p')
-        dayEl.textContent = dateFns.format(dateObj, 'eee')
-        dayEl.classList.add('day')
-        const numAndMonth = document.createElement('p')
-        numAndMonth.textContent = dateFns.format(dateObj, 'dd MMM')
-        numAndMonth.classList.add('num-and-month')
-        datetime.append(dayEl, numAndMonth)
-    }
+    card.append(
+        buildTodayDate(day),
+        buildIcon(iconUrl, day.icon),
+        buildTemp(day, unit),
+        buildConditions(day),
+        buildWalkSentence(category),
+        buildGif(gifUrl),
+        buildSunRiseSet(day),
+        buildTempMinMax(day, unit)
+    )
 
-    
-    const srcIconBase = './icons/monochrome/'
-    const iconElement =document.createElement('img')
-    iconElement.classList.add('icon')
-    iconElement.src = ( await import(`${srcIconBase}${day.icon}.svg`)).default
-    
-    const imgAlt = day.icon.replace("-", " ")
-    iconElement.alt = `${imgAlt} icon`
-    
-    const conditions = document.createElement('p')
-    conditions.textContent = day.conditions
-    conditions.classList.add('conditions')
-    
-    const temp = document.createElement('p')
-    temp.textContent = `${day.temp}${degreeValue}`
-    temp.classList.add('temp')
-
-
-    if (isToday) {
-        card.append(datetime,iconElement, temp, conditions)
-    }else{
-        card.append(datetime,iconElement, conditions, temp)
-    }
-    
-    if (isToday) {
-        const gifElement = document.createElement('img')
-        gifElement.classList.add('gif')
-        gifElement.src = gifUrl
-
-        const walkSentence = document.createElement('p')
-        
-        walkSentence.textContent = (category === 'coffee')? 'Yes - go for a walk' : 'No - stay at home(but drink coffee!)'
-        walkSentence.classList.add('walk')
-
-        const tempMinMax = document.createElement('div')
-        tempMinMax.classList.add('temp-min-max')
-    
-        const tempmax = document.createElement('p')
-        tempmax.textContent = 'High'
-        tempmax.classList.add('tempmax')
-        const tempmaxValue = document.createElement('p')
-        tempmaxValue.textContent = `${day.tempmax}${degreeValue}`
-        tempmaxValue.classList.add('tempmax-value')
-
-        const tempmin = document.createElement('p')
-        tempmin.textContent = 'Low'
-        tempmin.classList.add('tempmin')
-        const tempminValue = document.createElement('p')
-        tempminValue.textContent = `${day.tempmin}${degreeValue}`
-        tempminValue.classList.add('tempmin-value')
-
-        tempMinMax.append(tempmax, tempmaxValue,tempmin, tempminValue)
-        
-
-        const sunRiseSet = document.createElement('div')
-        sunRiseSet.classList.add('sunrise-sunset')
-    
-        const sunrise = document.createElement('p')
-        sunrise.textContent = 'Sunrise'
-        sunrise.classList.add('sunrise')
-        const sunriseValue = document.createElement('p')
-        sunriseValue.textContent = `${day.sunrise.slice(0,5)}`
-        sunriseValue.classList.add('sunrise-value')
-    
-        const sunset = document.createElement('p')
-        sunset.textContent = 'Sunset'
-        sunset.classList.add('sunset')
-        const sunsetValue = document.createElement('p')
-        sunsetValue.textContent = `${day.sunset.slice(0,5)}`
-        sunsetValue.classList.add('sunset-value')
-
-        sunRiseSet.append(sunrise, sunriseValue, sunset, sunsetValue) 
-        
-        card.append(walkSentence,gifElement, sunRiseSet, tempMinMax)
-    }
-
-    
     return card
+}
 
+export async function createDayCard(day, unit) {
+    const card = document.createElement('div')
+    card.classList.add('card', 'week-day')
+
+    const iconUrl = (await import(`./icons/monochrome/${day.icon}.svg`)).default
+
+    card.append(
+        buildWeekDate(day),
+        buildIcon(iconUrl, day.icon),
+        buildConditions(day),
+        buildTemp(day, unit),
+    )
+
+    return card
 }
 
 
-export async function renderToday(day, gifUrl, unit, walk, address) {    
+
+export async function renderToday(day, gifUrl, unit, category, address) {    
     const container = document.querySelector('.container')
     container.replaceChildren()
-    const card = await createCard(day, true,unit, walk, gifUrl, address)
+    const card = await createTodayCard(day, unit, gifUrl, category, address)
     container.append(card)
 }
 
@@ -236,7 +161,7 @@ export async function renderToday(day, gifUrl, unit, walk, address) {
 export async function renderWeek(days, unit) {
     const container = document.querySelector('.container')
     const nextWeek = days.slice(1)
-    const promiseCards =  nextWeek.map(day => (createCard(day, false,unit)))
+    const promiseCards = nextWeek.map(day => createDayCard(day, unit))
     const cards = await Promise.all(promiseCards)
     container.append(...cards)
 }
