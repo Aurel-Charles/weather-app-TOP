@@ -1,4 +1,4 @@
-import { buildConditions, buildTitle,buildTodayDate, buildGif, buildIcon, buildSunRiseSet, buildTemp, buildTempMinMax, buildWalkSentence, buildWeekDate } from "./renderWeatherElement.js"
+import { buildConditions, buildTitle,buildTodayDate, buildGif, buildIcon, buildSunRiseSet, buildTemp, buildTempMinMax, buildWalkSentence, buildWeekDate, buildDescription } from "./renderWeatherElement.js"
 
 function makeIcon(iconName) {
     const icon = document.createElement('span')
@@ -125,6 +125,7 @@ export async function createTodayCard(day, unit, gifUrl, category, address) {
         buildConditions(day),
         buildWalkSentence(category),
         buildGif(gifUrl),
+        buildDescription(day),
         buildSunRiseSet(day),
         buildTempMinMax(day, unit)
     )
@@ -136,12 +137,16 @@ export async function createDayCard(day, unit) {
     const card = document.createElement('div')
     card.classList.add('card', 'week-day')
 
+    const dateObj =  new Date(day.datetime)
+    card.classList.toggle('weekend', dateFns.isWeekend(dateObj))
+
     const iconUrl = (await import(`./icons/monochrome/${day.icon}.svg`)).default
 
     card.append(
         buildWeekDate(day),
         buildIcon(iconUrl, day.icon),
         buildConditions(day),
+        buildDescription(day),
         buildTemp(day, unit),
     )
 

@@ -7,6 +7,13 @@ export function buildConditions(day) {
     return conditions
 }
 
+export function buildDescription(day) {
+    const description = document.createElement('p')
+    description.textContent = day.description
+    description.classList.add('description')
+    return description
+}
+
 export function buildTemp(day, unit) {
     const temp = document.createElement('p')
     const degreeValue = unit === 'metric' ? '°C' : '°F'
@@ -93,16 +100,22 @@ export function buildTodayDate(day){
 }
 
 export function buildWeekDate(day) {
-    const datetime = document.createElement('div')
+    const datetime = document.createElement('time')
     datetime.classList.add('date')
     const dateObj = new Date(day.datetime)
-    const dayEl = document.createElement('p')
+    datetime.setAttribute('datetime', dateFns.format(dateObj, 'yyyy-MM-dd'))
+    const dayEl = document.createElement('span')
     dayEl.textContent = dateFns.format(dateObj, 'eee')
     dayEl.classList.add('day')
-    const numAndMonth = document.createElement('p')
-    numAndMonth.textContent = dateFns.format(dateObj, 'dd MMM')
-    numAndMonth.classList.add('num-and-month')
-    datetime.append(dayEl, numAndMonth)
+
+    const num = document.createElement('span')
+    num.textContent = dateFns.format(dateObj, 'dd')
+    num.classList.add('num')
+
+    const month = document.createElement('span')
+    month.textContent = dateFns.format(dateObj, 'MMM')
+    month.classList.add('month')
+    datetime.append(dayEl, num, month)
     return datetime
 }
 

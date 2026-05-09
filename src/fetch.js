@@ -13,21 +13,24 @@ export async function fetchWeather(address, metric) {
         throw new Error(`Weather HTTP error! status: ${response.status}`)
     }
     let dataWeather = await response.json()
+    
     let dataApp = {
         address: dataWeather.resolvedAddress,
         days: dataWeather.days.slice(0,8).map((day)=> {
-                return {
-                    datetime: day.datetime,
-                    conditions: day.conditions,
-                    temp: day.temp,
-                    tempmin: day.tempmin,
-                    tempmax: day.tempmax,
-                    sunrise: day.sunrise,
-                    sunset: day.sunset,
-                    icon: day.icon,
-                }
-            })
+            return {
+                datetime: day.datetime,
+                conditions: day.conditions,
+                description: day.description,
+                temp: day.temp,
+                tempmin: day.tempmin,
+                tempmax: day.tempmax,
+                sunrise: day.sunrise,
+                sunset: day.sunset,
+                icon: day.icon,
+            }
+        })
     }
+    console.log(dataApp);
     return dataApp
 }
 

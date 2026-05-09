@@ -284,6 +284,12 @@ input, button, select{
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.500);
 }
 
+.card.today .description{
+  grid-column: 1 / 3;
+  margin-bottom: 1rem;
+  color:  var(--text-secondary);
+}
+
 .sunrise-sunset , .temp-min-max{
   display: grid;
   gap: 0.2rem 1rem;
@@ -316,31 +322,43 @@ input, button, select{
 }
 
 .card.week-day{
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto 1fr 1.5fr 0.3fr;
   align-items: center;
   gap: 2rem;
   background-color: var(--bg-panel);
   margin: 0.4rem 2rem 0.4rem 2rem;
   padding: 0.2rem 1rem;
   border-radius: 15px;
+  border: solid 1px var(--border-on-dark);
 }
 .card.week-day > .date{
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
   margin-right: 1rem;
 }
-div.date > .day{
+
+time > .day{
   color: var(--text-secondary);
 }
-div.date > .num-and-month{
+time > .num, time > .month{
   color: var(--text-muted);
 }
 
-.card.card.week-day > .temp {
-  margin-left: auto;
+.card.week-day > .temp {
   font-size: 1.4rem;
   color: var(--text-secondary);
+  justify-self: end;
+}
+.card.week-day > .description {
+  color: var(--text-secondary);
+  margin-left: auto;
+  text-align: end;
+}
+
+.card.week-day.weekend{
+  background-color: var(--bg-panel-hover);
 }
 
 .icon{
@@ -420,6 +438,12 @@ text-align: center;
   .card.week-day > .date{
     align-items: start;
     min-width: 2.5rem;
+  }
+  .card.week-day > .description {
+    display: none;
+  }
+  .card.week-day > .temp {
+    margin-left: auto;
   }
 
   .card.today{
